@@ -170,7 +170,7 @@ class InvitationKey(models.Model):
         message_html = render_to_string('invitation/invitation_email.html',context)
         context.update({'sender_note':mark_safe(strip_tags(sender_note))})
         message = render_to_string('invitation/invitation_email.txt',context)
-        msg = EmailMultiAlternatives(subject, message, from_email, [self.recipient[0]])
+        msg = EmailMultiAlternatives(subject, message, from_email, [self.recipient[0]], headers={'Reply-To': self.from_user.email})
         msg.attach_alternative(message_html, "text/html")
         msg.send()
     
