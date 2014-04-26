@@ -44,7 +44,7 @@ def invited(request, invitation_key=None, invitation_recipient=None, extra_conte
                 if not isinstance(invitation_recipient, tuple):
                     invitation_recipient = (invitation_recipient, None, None)
                 extra_context.update({'invitation_recipient': invitation_recipient})
-                request.session['invitation_key'] = valid_key_obj
+                request.session['invitation_key'] = valid_key_obj.key
                 request.session['invitation_recipient'] = invitation_recipient
                 request.session['invitation_context'] = extra_context or {}
 
@@ -64,6 +64,7 @@ def register(request, backend, success_url=None,
     if getattr(settings, 'INVITE_MODE', False):
         invitation_key = request.REQUEST.get('invitation_key', False)
         if invitation_key:
+            invitation_key = InvitationKey.objects.is_key_valid(invitation_key)
             extra_context.update({'invitation_key': invitation_key})
             if is_key_valid(invitation_key):
                 return registration_register(request, backend, success_url,
