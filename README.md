@@ -90,8 +90,8 @@ Example accountadapter.py:
 				del request.session['invitation_context']
 
 
-***3)*** In your settings point SOCIALACCOUNT_ADAPTER to the accountadapter.py file you created above (this is required):  
-SOCIALACCOUNT_ADAPTER ="myprojectname.accountadapter.SocialAccountAdapter"
+***3)*** In your settings point ACCOUNT_ADAPTER to the accountadapter.py file you created above (this is required):  
+ACCOUNT_ADAPTER ="myprojectname.accountadapter.AccountAdapter"
 
 ***4)*** Add the setting `INVITATION_USE_ALLAUTH = True` and `'INVITE_MODE' = True` to your settings.
 
