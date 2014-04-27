@@ -93,7 +93,7 @@ Example accountadapter.py:
 ***3)*** In your settings point SOCIALACCOUNT_ADAPTER to the accountadapter.py file you created above (this is required):  
 SOCIALACCOUNT_ADAPTER ="myprojectname.accountadapter.SocialAccountAdapter"
 
-***4)*** Add the setting `INVITATION_USE_ALLAUTH = True` to your settings.
+***4)*** Add the setting `INVITATION_USE_ALLAUTH = True` and `'INVITE_MODE' = True` to your settings.
 
 ***5)*** add ALLOW_NEW_REGISTRATIONS = True/False to your settings file:
 This setting allows you to block all new registrations even with a valid invitation.

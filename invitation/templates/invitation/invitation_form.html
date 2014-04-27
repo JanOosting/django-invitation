@@ -12,7 +12,7 @@
 	<p>You have <b>{{qty}}</b> invitations remaining!</p>
 	<p>Enter your friend's information below to send an invitation:</p>
 	{% endblocktrans %}
-	<form action="{% url invitation_invite %}" method="POST">
+	<form action="{% url "invitation_invite" %}" method="POST">
 		{% csrf_token %}
 		{{form.as_p}}
 		<b>Email Preview:</b>
