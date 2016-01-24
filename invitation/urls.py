@@ -12,7 +12,7 @@ else:
     
 from invitation.views import invite, invited, register, send_bulk_invitations, token
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^invite/complete/$',
             TemplateView.as_view(template_name='invitation/invitation_complete.html'),
             name='invitation_complete'),
@@ -32,4 +32,4 @@ urlpatterns = patterns('',
     url(r'^token/(?P<key>\w+)/$', 
                 token,
                 name='invitation_token'),
-)
+]
