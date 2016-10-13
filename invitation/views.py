@@ -62,7 +62,7 @@ def register(request, backend, success_url=None,
     
     extra_context = extra_context is not None and extra_context.copy() or {}
     if getattr(settings, 'INVITE_MODE', False):
-        invitation_key = request.REQUEST.get('invitation_key', False)
+        invitation_key = request.GET.get('invitation_key', False)
         if invitation_key:
             extra_context.update({'invitation_key': invitation_key})
             if is_key_valid(invitation_key):
