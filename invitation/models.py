@@ -19,10 +19,10 @@ from django.core.files.storage import default_storage
 #token imports
 from PIL import Image, ImageFont, ImageDraw, ImageOps
 from picklefield.fields import PickledObjectField
-import urllib2
+from urllib.request import urlopen
 from django.core.files.temp import NamedTemporaryFile
 from django.core.files import File
-from urlparse import urlparse, urlunparse
+from urllib.parse import urlparse, urlunparse
 from django.db import connection
 
 
@@ -69,8 +69,8 @@ class InvitationKeyManager(models.Manager):
         The key for the ``InvitationKey`` will be a SHA1 hash, generated 
         from a combination of the ``User``'s username and a random salt.
         """
-        salt = sha_constructor(str(random.random())).hexdigest()[:5]
-        key = sha_constructor("%s%s%s" % (datetime.datetime.now(), salt, user.username)).hexdigest()
+        salt = str(random.random())[:5]
+        key = sha_constructor(("%s%s%s" % (datetime.datetime.now(), salt, user.username)).encode('utf-8')).hexdigest()
         if not save:
             return InvitationKey(from_user=user, key='previewkey00000000', recipient=recipient, date_invited=datetime.datetime.now())
         return self.create(from_user=user, key=key, recipient=recipient)
@@ -185,7 +185,7 @@ class InvitationKey(models.Model):
             tw, th = txt_img.size
             x = iw/2 - tw/2
             y = ih/2 - th/2
-            image.paste( exp_img_r, (x,y+offset), exp_img_r)
+            image.paste( exp_img_r, (int(x),int(y+offset)), exp_img_r)
             return offset+th
         
         #normalize sataic url
@@ -197,7 +197,7 @@ class InvitationKey(models.Model):
         #open base token image
         img_url = static_url+'notification/img/token-invite.png'
         temp_img = NamedTemporaryFile()    
-        temp_img.write(urllib2.urlopen(img_url).read())
+        temp_img.write(urlopen(img_url).read())
         temp_img.flush()
         image = Image.open(temp_img.name)
 

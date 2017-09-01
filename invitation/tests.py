@@ -17,7 +17,7 @@ getting django-invitation running in the default setup, to wit:
 """
 
 import datetime
-import sha
+import hashlib
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -35,7 +35,7 @@ allauth_installed = False
 try:
     if 'allauth' in settings.INSTALLED_APPS:
         allauth_installed = True
-        print "** allauth installed **"    
+        print("** allauth installed **")
     from allauth.socialaccount.models import SocialApp
 except:
     pass
@@ -45,7 +45,7 @@ try:
     import registration
     if 'registration' in settings.INSTALLED_APPS:
         registration_installed = True
-        print "** registration installed **"    
+        print("** registration installed **")
 except:
     pass        
 
@@ -114,7 +114,7 @@ class InvitationTestCaseAllauth(InvitationTestCase):
         self.saved_socialaccount_providers = settings.SOCIALACCOUNT_PROVIDERS
         settings.SOCIALACCOUNT_PROVIDERS = {}   
 
-        self.facebook_app = SocialApp(site=Site.objects.get_current(), provider='facebook', name='test', key='abc', secret='def')
+        self.facebook_app = SocialApp(provider='facebook', name='test', key='abc', secret='def')
         self.facebook_app.save()
         
         
@@ -248,7 +248,7 @@ class InvitationFormTests(InvitationTestCase):
 
     def test_invitation_form(self):
         form = forms.InvitationKeyForm(data={ 'email': 'foo@example.com' ,}, remaining_invitations=1 )
-        print form.errors
+        print(form.errors)
         self.failUnless(form.is_valid())
 
 
@@ -318,8 +318,10 @@ class InvitationViewTestsRegistration(InvitationTestCaseRegistration):
         self.assertTemplateUsed(response, 'invitation/wrong_invitation_key.html')
 
         # Nonexistent key use the wrong key template.
+        hash = hashlib.md5()
+        hash.update('foo'.encode("utf-8"))
         response = self.client.get(reverse('invitation_invited',
-                                           kwargs={ 'invitation_key': sha.new('foo').hexdigest() }))
+                                           kwargs={ 'invitation_key': hash.hexdigest() }))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'invitation/wrong_invitation_key.html')
 
@@ -330,7 +332,7 @@ class InvitationViewTestsRegistration(InvitationTestCaseRegistration):
         """        
         # This won't work if registration isn't installed
         if not registration_installed:
-            print "** Skipping test requiring django-registration **"
+            print("** Skipping test requiring django-registration **")
             return 
         
         # The first use of the key to register a new user works.
@@ -421,8 +423,10 @@ class InvitationViewTestsAllauth(InvitationTestCaseAllauth):
         self.assertTemplateUsed(response, 'invitation/wrong_invitation_key.html')
 
         # Nonexistent key use the wrong key template.
+        hash = hashlib.md5()
+        hash.update('foo'.encode('utf-8'))
         response = self.client.get(reverse('invitation_invited',
-                                           kwargs={ 'invitation_key': sha.new('foo').hexdigest() }))
+                                           kwargs={ 'invitation_key': hash.hexdigest() }))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'invitation/wrong_invitation_key.html')
 
@@ -433,7 +437,7 @@ class InvitationViewTestsAllauth(InvitationTestCaseAllauth):
         """        
         # This won't work if registration isn't installed
         if not allauth_installed:
-            print "** Skipping test requiring django-allauth **"
+            print("** Skipping test requiring django-allauth **")
             return 
         
         # The first use of the key to register a new user works.
@@ -494,7 +498,7 @@ class InviteModeOffTestsRegistration(InvitationTestCaseRegistration):
         """
         # This won't work if registration isn't installed
         if not registration_installed:
-            print "** Skipping test requiring django-registration **"
+            print("** Skipping test requiring django-registration **")
             return 
         
         response = self.client.get(reverse('invitation_invited',
@@ -550,7 +554,7 @@ class InviteModeOffTestsAllauth(InvitationTestCaseAllauth):
         """
         # This won't work if registration isn't installed
         if not allauth_installed:
-            print "** Skipping test requiring django-allauth **"
+            print("** Skipping test requiring django-allauth **")
             return 
         
         response = self.client.get(reverse('invitation_invited',
@@ -567,7 +571,7 @@ class InviteModeOffTestsAllauth(InvitationTestCaseAllauth):
         """
         # This won't work if registration isn't installed
         if not allauth_installed:
-            print "** Skipping test requiring django-allauth **"
+            print("** Skipping test requiring django-allauth **")
             return 
         
         # TODO fix this.  But for now I'm not going to bother since we could simply remove 
@@ -575,4 +579,3 @@ class InviteModeOffTestsAllauth(InvitationTestCaseAllauth):
         response = self.client.get(reverse('registration_register'))
         self.assertEqual(response.status_code, 302)
         self.assertTemplateUsed(response, 'account/signup.html')
-                        
