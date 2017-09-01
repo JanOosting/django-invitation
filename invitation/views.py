@@ -150,17 +150,17 @@ def send_bulk_invitations(request, success_url=None):
 
 from django.shortcuts import redirect
 from django.core.files.storage import default_storage
-import urllib2
+from urllib.request import urlopen
 import mimetypes
 from django.http import HttpResponse
-from urlparse import urlparse, urlunparse
+from urllib.parse import urlparse, urlunparse
             
 def token(request, key):
     '''
     Returns an aproproate token image.  If the key is valid & token image existis a personalized
     token is returned or else a token image marked invalid is returned.
     '''
-    print  '---token'
+    # print  '---token'
     site = Site.objects.get_current()
     scheme = 'http'
     if request.is_secure():
@@ -173,20 +173,20 @@ def token(request, key):
     static_url = urlunparse(s_parts)
     m_parts = (m_parse.scheme, m_parse.netloc or r_parse.netloc, m_parse.path, m_parse.params, m_parse.query, m_parse.fragment)
     media_url = urlunparse(m_parts)
-    print 'static_url', static_url
-    print 'media_url', media_url
+    #print 'static_url', static_url
+    #print 'media_url', media_url
         
     token_url = '%stokens/%s.png' % (media_url, key)
-    print token_url
+    #print token_url
     token_invalid_url = '%snotification/img/%s.png' % (static_url, 'token-invalid')
     token_path = 'tokens/%s.png' % key
     valid_key = is_key_valid(key) or key == 'previewkey00000000'
     if default_storage.exists(token_path) and valid_key:
-        contents = urllib2.urlopen(token_url).read()
+        contents = urlopen(token_url).read()
         mimetype = mimetypes.guess_type(token_url)
         response = HttpResponse(contents, mimetype=mimetype)
     else:
-        contents = urllib2.urlopen(token_invalid_url).read()
+        contents = urlopen(token_invalid_url).read()
         mimetype = mimetypes.guess_type(token_invalid_url)
         response = HttpResponse(contents, mimetype=mimetype)
     

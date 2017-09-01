@@ -19,10 +19,10 @@ from django.core.files.storage import default_storage
 #token imports
 from PIL import Image, ImageFont, ImageDraw, ImageOps
 from picklefield.fields import PickledObjectField
-import urllib2
+from urllib.request import urlopen
 from django.core.files.temp import NamedTemporaryFile
 from django.core.files import File
-from urlparse import urlparse, urlunparse
+from urllib.parse import urlparse, urlunparse
 from django.db import connection
 
 
@@ -197,7 +197,7 @@ class InvitationKey(models.Model):
         #open base token image
         img_url = static_url+'notification/img/token-invite.png'
         temp_img = NamedTemporaryFile()    
-        temp_img.write(urllib2.urlopen(img_url).read())
+        temp_img.write(urlopen(img_url).read())
         temp_img.flush()
         image = Image.open(temp_img.name)
 
