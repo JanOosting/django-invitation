@@ -13,7 +13,7 @@ from django.contrib.sites.models import Site
 from django.utils.timezone import now
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.files.storage import default_storage
 
 #token imports
@@ -98,7 +98,7 @@ class InvitationKey(models.Model):
     key = models.CharField(_('invitation key'), max_length=40)
     date_invited = models.DateTimeField(_('date invited'), 
                                         auto_now_add=True)
-    from_user = models.ForeignKey(User, 
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE,
                                   related_name='invitations_sent')
     registrant = models.ManyToManyField(User, blank=True, 
                                   related_name='invitations_used')
@@ -219,7 +219,7 @@ class InvitationKey(models.Model):
         return token_html
         
 class InvitationUser(models.Model):
-    inviter = models.OneToOneField(User)
+    inviter = models.OneToOneField(User, on_delete=models.CASCADE,)
     invitations_remaining = models.IntegerField()
 
     def __unicode__(self):
