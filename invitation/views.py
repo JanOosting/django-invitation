@@ -7,7 +7,7 @@ from django.contrib.sites.models import Site
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.utils.safestring import mark_safe
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render
 from django.template import RequestContext
 
 if getattr(settings, 'INVITATION_USE_ALLAUTH', False):
@@ -142,10 +142,10 @@ def send_bulk_invitations(request, success_url=None):
             'html_preview': render_to_string('invitation/invitation_email.html', preview_context),
             'text_preview': render_to_string('invitation/invitation_email.txt', preview_context),
         }
-        #return render(request, 'invitation/invitation_form_bulk.html', context)
-        return render_to_response('invitation/invitation_form_bulk.html',
-                          context,
-                          context_instance=RequestContext(request))
+        return render(request, 'invitation/invitation_form_bulk.html', context)
+        # return render_to_response('invitation/invitation_form_bulk.html',
+        #                  context,
+        #                  context_instance=RequestContext(request))
             
 
 from django.shortcuts import redirect
